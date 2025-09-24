@@ -15,6 +15,8 @@ use yii\base\Application;
 
 class Connection extends \hiqdev\hiart\rest\Connection implements ConnectionInterface
 {
+    public const EVENT_API_ERROR_RESPONSE = 'hiartApiErrorResponse';
+
     public $queryBuilderClass = QueryBuilder::class;
 
     private $app;
@@ -99,6 +101,8 @@ class Connection extends \hiqdev\hiart\rest\Connection implements ConnectionInte
                 $this->app->response->refresh()->send();
                 $this->app->end();
             }
+
+            $this->trigger(self::EVENT_API_ERROR_RESPONSE, new ErrorResponseEvent($response));
 
             return $error ?: 'unknown api error';
         }
